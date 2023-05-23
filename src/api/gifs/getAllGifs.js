@@ -1,6 +1,6 @@
 export default async function getAllGifs() {
     try {
-        const request = await fetch(`${process.env.API_URL}/gifs/all`);
+        const request = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/gifs/all`);
         const response = await request.json();
 
         return response;
