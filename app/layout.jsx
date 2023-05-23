@@ -1,4 +1,5 @@
-import MenuTemplate from "../Menu/Menu"
+import { QueryClient } from "@tanstack/react-query"
+import MenuTemplate from "../components/Menu/Menu"
 
 export const metadata = {
   title: 'Next.js',
@@ -16,4 +17,14 @@ export default function RootLayout({ children }) {
       </body>
     </html>
   )
+}
+
+export async function getStaticProps() {
+  const queryClient = new QueryClient()
+
+  return {
+    props: {
+      dehydratedState: dehydrate(queryClient),
+    },
+  }
 }

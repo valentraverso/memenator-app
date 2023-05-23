@@ -13,6 +13,7 @@ import PersonAdd from '@mui/icons-material/PersonAdd';
 import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 import { useState } from 'react';
+import { TextField } from '@mui/material';
 
 export default function MenuTemplate() {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -26,6 +27,7 @@ export default function MenuTemplate() {
   return (
     <>
       <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center', justifyContent: "center" }}>
+        <TextField id="outlined-basic" label="Search Gif" variant="outlined" />
         <Typography sx={{ minWidth: 100 }}>Contact</Typography>
         <Typography sx={{ minWidth: 100 }}>Profile</Typography>
         <Tooltip title="Account settings">
