@@ -21,8 +21,6 @@ import Image from 'next/image';
 export default function MenuTemplate() {
   const { user, isLoading } = useUser();
 
-  console.log(user)
-
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
@@ -47,10 +45,12 @@ export default function MenuTemplate() {
             aria-haspopup="true"
             aria-expanded={open ? 'true' : undefined}
           >
-            isLoading ?
-            <Avatar sx={{ width: 32, height: 32 }}></Avatar>
-            :
-            <Avatar sx={{ width: 32, height: 32 }}><Image src={user.picture} width={32} height={32}/></Avatar>
+            {
+              isLoading || !user ?
+                <Avatar sx={{ width: 32, height: 32 }}></Avatar>
+                :
+                <Avatar sx={{ width: 32, height: 32 }}><Image src={user?.picture} width={32} height={32} /></Avatar>
+            }
           </IconButton>
         </Tooltip>
       </Box>
@@ -90,23 +90,35 @@ export default function MenuTemplate() {
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
         <MenuItem onClick={handleClose}>
-          <Avatar /> Profile
+          <Avatar />
+          {
+            !user ?
+              'Profile'
+              :
+              user.name
+          }
         </MenuItem>
         <Divider />
-        <Link href={'/api/auth/login'}>
-          <MenuItem onClick={handleClose}>
-            <ListItemIcon>
-              <PersonAdd fontSize="small" />
-            </ListItemIcon>
-            Login
-          </MenuItem>
-        </Link>
-        <MenuItem onClick={handleClose}>
-          <ListItemIcon>
-            <Logout fontSize="small" />
-          </ListItemIcon>
-          Logout
-        </MenuItem>
+        {
+          !user ?
+            <Link href={'/api/auth/login'}>
+              <MenuItem onClick={handleClose}>
+                <ListItemIcon>
+                  <PersonAdd fontSize="small" />
+                </ListItemIcon>
+                Login
+              </MenuItem>
+            </Link>
+            :
+            <Link href={'/api/auth/logout'}>
+              <MenuItem onClick={handleClose}>
+                <ListItemIcon>
+                  <Logout fontSize="small" />
+                </ListItemIcon>
+                Logout
+              </MenuItem>
+            </Link>
+        }
       </Menu>
     </>
   );
