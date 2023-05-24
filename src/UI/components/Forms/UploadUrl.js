@@ -21,8 +21,6 @@ export default function UploadUrl({ open, handleClose }) {
         return data;
     });
 
-    console.log(tagsInfo)
-
     const [data, setData] = useState({
         description: '',
         url: '',
