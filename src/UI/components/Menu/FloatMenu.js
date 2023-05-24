@@ -6,6 +6,7 @@ import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternate
 import LinkOutlinedIcon from '@mui/icons-material/LinkOutlined';
 import UploadUrl from '../Forms/UploadUrl';
 import { useState } from 'react';
+import UploadGif from '../Forms/UploadGif';
 
 
 const actions = [
@@ -37,6 +38,7 @@ export default function BasicSpeedDial() {
     return (
         <>
             <UploadUrl open={openModalUploadUrl} handleClose={handleCloseModalUploadUrl} />
+            <UploadGif open={openModalUploadGif} handleClose={handleCloseModalUploadGif} />
             <Box sx={{ height: 320, transform: 'translateZ(0px)', flexGrow: 1 }}>
                 <SpeedDial
                     ariaLabel="SpeedDial basic example"
@@ -47,7 +49,7 @@ export default function BasicSpeedDial() {
                         key={'Upload gif'}
                         icon={<AddPhotoAlternateOutlinedIcon />}
                         tooltipTitle={'Upload gif'}
-                    // onClick={handleClickOpen}
+                        onClick={handleOpenModalUploadGif}
                     />
                     <SpeedDialAction
                         key={'Upload gif by url'}

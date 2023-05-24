@@ -7,8 +7,8 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { useState } from 'react';
 import { Autocomplete, Backdrop, Chip, CircularProgress, Snackbar } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
-import getMostPopularTags from '../../../api/gifs/getMostPopularTags';
-import postUrlGif from '../../../api/gifs/postUrlGif';
+import getMostPopularTags from '../../../pages/api/gifs/getMostPopularTags';
+import postUrlGif from '../../../pages/api/gifs/postUrlGif';
 
 export default function UploadUrl({ open, handleClose }) {
     const [disableAutocomplete, setDisableAutocomplete] = useState(0);

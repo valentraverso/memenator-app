@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import CardGif from "../UI/components/Cards/CardGif";
-import getAllGifs from "../api/gifs/getAllGifs";
+import getAllGifs from "./api/gifs/getAllGifs";
 import PrincipalLayout from "../UI/layouts/PrincipalLayout";
 import { Grid } from "@mui/material";
 

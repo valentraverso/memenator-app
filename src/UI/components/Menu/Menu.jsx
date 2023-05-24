@@ -14,10 +14,18 @@ import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 import { useState } from 'react';
 import { TextField } from '@mui/material';
+import Link from 'next/link';
+import { useUser } from '@auth0/nextjs-auth0/client';
+import Image from 'next/image';
 
 export default function MenuTemplate() {
+  const { user, isLoading } = useUser();
+
+  console.log(user)
+
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -39,7 +47,10 @@ export default function MenuTemplate() {
             aria-haspopup="true"
             aria-expanded={open ? 'true' : undefined}
           >
-            <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
+            isLoading ?
+            <Avatar sx={{ width: 32, height: 32 }}></Avatar>
+            :
+            <Avatar sx={{ width: 32, height: 32 }}><Image src={user.picture} width={32} height={32}/></Avatar>
           </IconButton>
         </Tooltip>
       </Box>
@@ -81,22 +92,15 @@ export default function MenuTemplate() {
         <MenuItem onClick={handleClose}>
           <Avatar /> Profile
         </MenuItem>
-        <MenuItem onClick={handleClose}>
-          <Avatar /> My account
-        </MenuItem>
         <Divider />
-        <MenuItem onClick={handleClose}>
-          <ListItemIcon>
-            <PersonAdd fontSize="small" />
-          </ListItemIcon>
-          Add another account
-        </MenuItem>
-        <MenuItem onClick={handleClose}>
-          <ListItemIcon>
-            <Settings fontSize="small" />
-          </ListItemIcon>
-          Settings
-        </MenuItem>
+        <Link href={'/api/auth/login'}>
+          <MenuItem onClick={handleClose}>
+            <ListItemIcon>
+              <PersonAdd fontSize="small" />
+            </ListItemIcon>
+            Login
+          </MenuItem>
+        </Link>
         <MenuItem onClick={handleClose}>
           <ListItemIcon>
             <Logout fontSize="small" />

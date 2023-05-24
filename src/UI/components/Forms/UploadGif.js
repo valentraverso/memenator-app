@@ -7,10 +7,10 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { useState } from 'react';
 import { Autocomplete, Backdrop, Chip, CircularProgress, Snackbar } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
-import getMostPopularTags from '../../../api/gifs/getMostPopularTags';
-import postUrlGif from '../../../api/gifs/postUrlGif';
+import getMostPopularTags from '../../../pages/api/gifs/getMostPopularTags';
+import postUrlGif from '../../../pages/api/gifs/postUrlGif';
 
-export default function UploadUrl({ open, handleClose }) {
+export default function UploadGif({ open, handleClose }) {
     const [disableAutocomplete, setDisableAutocomplete] = useState(0);
     const [isUploading, setIsUploading] = useState(false);
     const [isPopUpOpen, setIsPopUpOpen] = useState(false);
@@ -38,6 +38,14 @@ export default function UploadUrl({ open, handleClose }) {
         }))
     }
 
+    const handleImages = (e) => {
+        const { target: { files } } = e;
+        setData(prevState => ({
+            ...data,
+            gif: files[0]
+        }))
+    }
+
     const handleClosePopUpSuccess = () => {
         setIsPopUpOpen(false);
     };
@@ -56,12 +64,21 @@ export default function UploadUrl({ open, handleClose }) {
 
         setIsUploading(true);
 
-        
-        const postGif = await postUrlGif(data);
-        console.log("upload" , postGif)
-        if (!postGif.status) {
 
+        const postGif = await fetch('/api/gifs/postGif', {
+            method: 'POST',
+            body: data
+        });
+
+        const errorCodes = [404, 401];
+
+        if (!postGif.status || errorCodes.includes(postGif.status)) {
+            console.log("error", postGif)
+            setIsUploading(false);
+            return;
         }
+
+        console.log("post", postGif)
 
         setIsPopUpOpen(true);
         setIsUploading(false);
@@ -109,13 +126,13 @@ export default function UploadUrl({ open, handleClose }) {
                                 required
                             />
                             <TextField
-                                label="URL"
-                                variant="standard"
-                                type="url"
+                                name='gif'
+                                type='file'
+                                inputProps={{ accept: "image/gif" }}
                                 fullWidth
-                                inputProps={{ maxLength: 50 }}
-                                name='url'
-                                onChange={(e) => { handleInputs(e) }}
+                                margin="dense"
+                                sx={{ margin: '20px 0' }}
+                                onChange={(e) => { handleImages(e) }}
                                 required
                             />
                             {
