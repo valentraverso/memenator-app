@@ -15,33 +15,46 @@ const actions = [
 
 export default function BasicSpeedDial() {
 
-    const [open, setOpen] = useState(false);
+    const [openModalUploadUrl, setopenModalUploadUrl] = useState(false);
+    const [openModalUploadGif, setOpenModalUploadGif] = useState(false);
 
-    const handleClickOpen = () => {
-        setOpen(true);
+    const handleOpenModalUploadUrl = () => {
+        setopenModalUploadUrl(true);
     };
 
-    const handleClose = () => {
-        setOpen(false);
+    const handleCloseModalUploadUrl = () => {
+        setopenModalUploadUrl(false);
+    };
+
+    const handleOpenModalUploadGif = () => {
+        setOpenModalUploadGif(true);
+    };
+
+    const handleCloseModalUploadGif = () => {
+        setOpenModalUploadGif(false);
     };
 
     return (
         <>
-            <UploadUrl open={open} handleClose={handleClose} />
+            <UploadUrl open={openModalUploadUrl} handleClose={handleCloseModalUploadUrl} />
             <Box sx={{ height: 320, transform: 'translateZ(0px)', flexGrow: 1 }}>
                 <SpeedDial
                     ariaLabel="SpeedDial basic example"
-                    sx={{ position: 'absolute', bottom: 16, right: 16 }}
+                    sx={{ position: 'fixed', bottom: 16, right: 16 }}
                     icon={<SpeedDialIcon />}
                 >
-
                     <SpeedDialAction
                         key={'Upload gif'}
                         icon={<AddPhotoAlternateOutlinedIcon />}
                         tooltipTitle={'Upload gif'}
-                        onClick={handleClickOpen}
+                    // onClick={handleClickOpen}
                     />
-
+                    <SpeedDialAction
+                        key={'Upload gif by url'}
+                        icon={<LinkOutlinedIcon />}
+                        tooltipTitle={'Upload gif by url'}
+                        onClick={handleOpenModalUploadUrl}
+                    />
                 </SpeedDial>
             </Box>
         </>
