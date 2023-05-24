@@ -3,15 +3,19 @@ import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { useState } from 'react';
 import { Autocomplete, Chip } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
+import getMostPopularTags from '../../../api/gifs/getMostPopularTags';
 
 export default function UploadUrl({ open, handleClose }) {
-    const { data: { tagsInfo }, isLoading } = useQuery(['tags'], async () => {
-        
+    const { data: tagsInfo, isLoading } = useQuery(['tags'], async () => {
+        const data = await getMostPopularTags();
+
+        console.log(await data)
+
+        return data;
     });
 
     const [disableAutocomplete, setDisableAutocomplete] = useState(0);
@@ -41,6 +45,7 @@ export default function UploadUrl({ open, handleClose }) {
         e.preventDefault();
 
         console.log(data)
+        
     }
 
     return (
@@ -77,35 +82,40 @@ export default function UploadUrl({ open, handleClose }) {
                             onChange={(e) => { handleInputs(e) }}
                             required
                         />
-                        <Autocomplete
-                            multiple
-                            freeSolo
-                            disabled={disableAutocomplete === 5}
-                            onChange={(_event, value) => {
-                                setDisableAutocomplete(value.length)
-                                handleTags(value)
-                            }}
-                            renderTags={(value, getTagProps) =>
-                                value.map((option, index) => (
-                                    <Chip
-                                        variant="outlined"
-                                        label={option}
-                                        {...getTagProps({ index })}
-                                        disabled={false} />
+                        {
+                            isLoading ?
+                                'Loading tags...'
+                                :
+                                <Autocomplete
+                                    multiple
+                                    freeSolo
+                                    disabled={disableAutocomplete === 5}
+                                    onChange={(_event, value) => {
+                                        setDisableAutocomplete(value.length)
+                                        handleTags(value)
+                                    }}
+                                    renderTags={(value, getTagProps) =>
+                                        value.map((option, index) => (
+                                            <Chip
+                                                variant="outlined"
+                                                label={option}
+                                                {...getTagProps({ index })}
+                                                disabled={false} />
 
-                                ))
-                            }
-                            limitTags={5}
-                            options={top100Films.map((option) => option.title)}
-                            renderInput={(params) => (
-                                <TextField
-                                    {...params}
-                                    variant="standard"
-                                    label="Tags"
-                                    placeholder="Doge Meme"
+                                        ))
+                                    }
+                                    limitTags={5}
+                                    options={tagsInfo.data.map(option => option._id)}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            variant="standard"
+                                            label="Tags"
+                                            placeholder="Doge Meme"
+                                        />
+                                    )}
                                 />
-                            )}
-                        />
+                        }
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={handleClose}>Cancel</Button>
