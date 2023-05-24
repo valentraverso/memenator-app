@@ -20,11 +20,11 @@ export default function Page() {
             <p>Loading...</p>
             :
             <PrincipalLayout>
-                <Grid container spacing={4} 
-                sx={{marginLeft: 0, marginTop: 0}}>
+                <Grid container spacing={4}
+                    sx={{ marginLeft: 0, marginTop: 0 }}>
                     {
-                        data.data.map(gif => (
-                            <Grid item xs>
+                        data.data.map((gif, index) => (
+                            <Grid key={index} item xs md>
                                 <CardGif data={gif} />
                             </Grid>
                         ))

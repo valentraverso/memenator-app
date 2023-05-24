@@ -1,24 +1,28 @@
-import { getAccessToken, withApiAuthRequired } from "@auth0/nextjs-auth0";
+export default async function postGif(data) {
+    const fetchToken = await fetch(`/api/getTokenUser`);
+    const token = await fetchToken.json();
 
-export default withApiAuthRequired(async function postGif(req, res) {
-    console.log(req.files)
+    const formData = new FormData();
+
+    formData.append('description', data.description);
+    formData.append('tags', data.tags);
+    formData.append('gifs', data.gif);
+
     try {
-        const { accessToken } = await getAccessToken(req, res);
-
-        console.log("code", accessToken)
-
         const request = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/gifs/post`, {
             method: 'POST',
             headers: {
-                Authorization: `Bearer ${accessToken}`
-            }
+                Authorization: `Bearer ${token.accessToken}`
+            },
+            body: formData
         });
-        const response = request.json();
+        const response = await request.json();
 
-        res.status(request.status).send(Response)
+        return response;
     } catch (err) {
-        res.status(500).json({
+        return {
+            status: false,
             msg: err.message
-        })
+        }
     }
-})
+}

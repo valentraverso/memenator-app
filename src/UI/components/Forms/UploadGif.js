@@ -8,7 +8,7 @@ import { useState } from 'react';
 import { Autocomplete, Backdrop, Chip, CircularProgress, Snackbar } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import getMostPopularTags from '../../../pages/api/gifs/getMostPopularTags';
-import postUrlGif from '../../../pages/api/gifs/postUrlGif';
+import postGif from '../../../pages/api/gifs/postGif';
 
 export default function UploadGif({ open, handleClose }) {
     const [disableAutocomplete, setDisableAutocomplete] = useState(0);
@@ -18,22 +18,19 @@ export default function UploadGif({ open, handleClose }) {
     const { data: tagsInfo, isLoading } = useQuery(['tags'], async () => {
         const data = await getMostPopularTags();
 
-        console.log(await data)
-
         return data;
     });
 
-
     const [data, setData] = useState({
         description: '',
-        url: '',
-        tags: []
+        tags: [],
+        gif: {}
     });
 
     const handleInputs = (e) => {
         const { target: { name, value } } = e;
         setData(prevState => ({
-            ...data,
+            ...prevState,
             [name]: value
         }))
     }
@@ -41,7 +38,7 @@ export default function UploadGif({ open, handleClose }) {
     const handleImages = (e) => {
         const { target: { files } } = e;
         setData(prevState => ({
-            ...data,
+            ...prevState,
             gif: files[0]
         }))
     }
@@ -52,11 +49,9 @@ export default function UploadGif({ open, handleClose }) {
 
     const handleTags = (tagsForm) => {
         setData(prevState => ({
-            ...data,
+            ...prevState,
             tags: tagsForm
         }))
-
-        setIsPopUpOpen
     }
 
     const handleSubmit = async (e) => {
@@ -64,24 +59,16 @@ export default function UploadGif({ open, handleClose }) {
 
         setIsUploading(true);
 
+        const uploadGif = await postGif(data);
 
-        const postGif = await fetch('/api/gifs/postGif', {
-            method: 'POST',
-            body: data
-        });
-
-        const errorCodes = [404, 401];
-
-        if (!postGif.status || errorCodes.includes(postGif.status)) {
-            console.log("error", postGif)
+        if (!uploadGif.status) {
             setIsUploading(false);
             return;
         }
 
-        console.log("post", postGif)
-
         setIsPopUpOpen(true);
         setIsUploading(false);
+        handleClose(true);
     }
 
     return (
@@ -179,13 +166,3 @@ export default function UploadGif({ open, handleClose }) {
             </div>
     );
 }
-
-const top100Films = [
-    { title: 'The Shawshank Redemption', year: 1994 },
-    { title: 'The Godfather', year: 1972 },
-    { title: 'The Godfather: Part II', year: 1974 },
-    { title: 'The Dark Knight', year: 2008 },
-    { title: '12 Angry Men', year: 1957 },
-    { title: "Schindler's List", year: 1993 },
-    { title: 'Pulp Fiction', year: 1994 },
-]
