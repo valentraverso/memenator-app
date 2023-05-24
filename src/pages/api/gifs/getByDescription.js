@@ -1,6 +1,7 @@
-export default async function getMostPopularTags() {
+export default async function getByDescription(query) {
+
     try {
-        const request = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/gifs/tags/most-upload`);
+        const request = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/gifs/description/${query}`);
         const response = await request.json();
 
         return response;

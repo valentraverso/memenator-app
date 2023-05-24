@@ -18,11 +18,10 @@ export default function UploadUrl({ open, handleClose }) {
     const { data: tagsInfo, isLoading } = useQuery(['tags'], async () => {
         const data = await getMostPopularTags();
 
-        console.log(await data)
-
         return data;
     });
 
+    console.log(tagsInfo)
 
     const [data, setData] = useState({
         description: '',
@@ -33,7 +32,7 @@ export default function UploadUrl({ open, handleClose }) {
     const handleInputs = (e) => {
         const { target: { name, value } } = e;
         setData(prevState => ({
-            ...data,
+            ...prevState,
             [name]: value
         }))
     }
@@ -44,11 +43,9 @@ export default function UploadUrl({ open, handleClose }) {
 
     const handleTags = (tagsForm) => {
         setData(prevState => ({
-            ...data,
+            ...prevState,
             tags: tagsForm
         }))
-
-        setIsPopUpOpen
     }
 
     const handleSubmit = async (e) => {
@@ -56,16 +53,17 @@ export default function UploadUrl({ open, handleClose }) {
 
         setIsUploading(true);
 
-        
-        const postGif = await postUrlGif(data);
-        console.log("upload" , postGif)
-        if (!postGif.status) {
 
+        const postGif = await postUrlGif(data);
+        if (!postGif.status) {
+            setIsUploading(false);
         }
 
         setIsPopUpOpen(true);
         setIsUploading(false);
     }
+
+    const noTags = [{ _id: "Add a new tag" }]
 
     return (
         isUploading ?
@@ -122,35 +120,68 @@ export default function UploadUrl({ open, handleClose }) {
                                 isLoading ?
                                     'Loading tags...'
                                     :
-                                    <Autocomplete
-                                        multiple
-                                        freeSolo
-                                        disabled={disableAutocomplete === 5}
-                                        onChange={(_event, value) => {
-                                            setDisableAutocomplete(value.length)
-                                            handleTags(value)
-                                        }}
-                                        renderTags={(value, getTagProps) =>
-                                            value.map((option, index) => (
-                                                <Chip
-                                                    variant="outlined"
-                                                    label={option}
-                                                    {...getTagProps({ index })}
-                                                    disabled={false} />
+                                    (
+                                        !tagsInfo.status ?
+                                            <Autocomplete
+                                                multiple
+                                                freeSolo
+                                                disabled={disableAutocomplete === 5}
+                                                onChange={(_event, value) => {
+                                                    setDisableAutocomplete(value.length)
+                                                    handleTags(value)
+                                                }}
+                                                renderTags={(value, getTagProps) =>
+                                                    value.map((option, index) => (
+                                                        <Chip
+                                                            variant="outlined"
+                                                            label={option}
+                                                            {...getTagProps({ index })}
+                                                            disabled={false} />
 
-                                            ))
-                                        }
-                                        limitTags={5}
-                                        options={tagsInfo.data.map(option => option._id)}
-                                        renderInput={(params) => (
-                                            <TextField
-                                                {...params}
-                                                variant="standard"
-                                                label="Tags"
-                                                placeholder="Doge Meme"
+                                                    ))
+                                                }
+                                                limitTags={5}
+                                                options={noTags.map(option => option._id)}
+                                                renderInput={(params) => (
+                                                    <TextField
+                                                        {...params}
+                                                        variant="standard"
+                                                        label="Tags"
+                                                        placeholder="Doge Meme"
+                                                    />
+                                                )}
                                             />
-                                        )}
-                                    />
+                                            :
+                                            <Autocomplete
+                                                multiple
+                                                freeSolo
+                                                disabled={disableAutocomplete === 5}
+                                                onChange={(_event, value) => {
+                                                    setDisableAutocomplete(value.length)
+                                                    handleTags(value)
+                                                }}
+                                                renderTags={(value, getTagProps) =>
+                                                    value.map((option, index) => (
+                                                        <Chip
+                                                            variant="outlined"
+                                                            label={option}
+                                                            {...getTagProps({ index })}
+                                                            disabled={false} />
+
+                                                    ))
+                                                }
+                                                limitTags={5}
+                                                options={tagsInfo?.data.map(option => option._id)}
+                                                renderInput={(params) => (
+                                                    <TextField
+                                                        {...params}
+                                                        variant="standard"
+                                                        label="Tags"
+                                                        placeholder="Doge Meme"
+                                                    />
+                                                )}
+                                            />
+                                    )
                             }
                         </DialogContent>
                         <DialogActions>

@@ -71,6 +71,8 @@ export default function UploadGif({ open, handleClose }) {
         handleClose(true);
     }
 
+    const noTags = [{ _id: "Add a new tag" }]
+
     return (
         isUploading ?
             <Backdrop
@@ -126,35 +128,68 @@ export default function UploadGif({ open, handleClose }) {
                                 isLoading ?
                                     'Loading tags...'
                                     :
-                                    <Autocomplete
-                                        multiple
-                                        freeSolo
-                                        disabled={disableAutocomplete === 5}
-                                        onChange={(_event, value) => {
-                                            setDisableAutocomplete(value.length)
-                                            handleTags(value)
-                                        }}
-                                        renderTags={(value, getTagProps) =>
-                                            value.map((option, index) => (
-                                                <Chip
-                                                    variant="outlined"
-                                                    label={option}
-                                                    {...getTagProps({ index })}
-                                                    disabled={false} />
+                                    (
+                                        !tagsInfo.status ?
+                                            <Autocomplete
+                                                multiple
+                                                freeSolo
+                                                disabled={disableAutocomplete === 5}
+                                                onChange={(_event, value) => {
+                                                    setDisableAutocomplete(value.length)
+                                                    handleTags(value)
+                                                }}
+                                                renderTags={(value, getTagProps) =>
+                                                    value.map((option, index) => (
+                                                        <Chip
+                                                            variant="outlined"
+                                                            label={option}
+                                                            {...getTagProps({ index })}
+                                                            disabled={false} />
 
-                                            ))
-                                        }
-                                        limitTags={5}
-                                        options={tagsInfo.data.map(option => option._id)}
-                                        renderInput={(params) => (
-                                            <TextField
-                                                {...params}
-                                                variant="standard"
-                                                label="Tags"
-                                                placeholder="Doge Meme"
+                                                    ))
+                                                }
+                                                limitTags={5}
+                                                options={noTags.map(option => option._id)}
+                                                renderInput={(params) => (
+                                                    <TextField
+                                                        {...params}
+                                                        variant="standard"
+                                                        label="Tags"
+                                                        placeholder="Doge Meme"
+                                                    />
+                                                )}
                                             />
-                                        )}
-                                    />
+                                            :
+                                            <Autocomplete
+                                                multiple
+                                                freeSolo
+                                                disabled={disableAutocomplete === 5}
+                                                onChange={(_event, value) => {
+                                                    setDisableAutocomplete(value.length)
+                                                    handleTags(value)
+                                                }}
+                                                renderTags={(value, getTagProps) =>
+                                                    value.map((option, index) => (
+                                                        <Chip
+                                                            variant="outlined"
+                                                            label={option}
+                                                            {...getTagProps({ index })}
+                                                            disabled={false} />
+
+                                                    ))
+                                                }
+                                                limitTags={5}
+                                                options={tagsInfo.data.map(option => option._id)}
+                                                renderInput={(params) => (
+                                                    <TextField
+                                                        {...params}
+                                                        variant="standard"
+                                                        label="Tags"
+                                                        placeholder="Doge Meme"
+                                                    />
+                                                )}
+                                            />
+                                    )
                             }
                         </DialogContent>
                         <DialogActions>

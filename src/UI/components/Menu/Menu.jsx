@@ -10,16 +10,26 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
 import PersonAdd from '@mui/icons-material/PersonAdd';
-import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 import { useState } from 'react';
-import { TextField } from '@mui/material';
+import { Skeleton, TextField } from '@mui/material';
 import Link from 'next/link';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import Image from 'next/image';
+import { useQuery } from '@tanstack/react-query';
+import getMostPopularTags from '../../../pages/api/gifs/getMostPopularTags';
+import { useRouter } from 'next/router';
+import CottageOutlinedIcon from '@mui/icons-material/CottageOutlined';
 
 export default function MenuTemplate() {
   const { user, isLoading } = useUser();
+  const router = useRouter();
+
+  const { data: tagsInfo, isLoading: isLoadingTags } = useQuery(['tags'], async () => {
+    const data = await getMostPopularTags();
+
+    return data;
+  });
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -30,12 +40,34 @@ export default function MenuTemplate() {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const handleSubmit = (e) => {
+    if (e.key === 'Enter' && e.targe.value.length > 1) {
+      router.push(`/search/${e.target.value}`)
+    }
+  }
+
   return (
     <>
       <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center', justifyContent: "center" }}>
-        <TextField id="outlined-basic" label="Search Gif" variant="outlined" />
-        <Typography sx={{ minWidth: 100 }}>Contact</Typography>
-        <Typography sx={{ minWidth: 100 }}>Profile</Typography>
+        <Link href="/" ><CottageOutlinedIcon sx={{ marginRight: '40px' }} /></Link>
+        <TextField id="outlined-basic" label="Search Gif" variant="outlined" inputProps={{ maxLength: 20 }} onKeyDown={(e) => handleSubmit(e)} />
+        {
+          isLoadingTags ?
+            <Skeleton>
+              <Typography sx={{ minWidth: 100 }}>a</Typography>
+            </Skeleton>
+            :
+            (
+              tagsInfo.status ?
+              tagsInfo.data.map(tag => (
+                <Typography sx={{ minWidth: 100 }}><Link href={`/tags/${tag._id}`}>{tag._id}</Link></Typography>
+              ))
+              :
+              <p>We don't have tags yet.</p>
+            )
+        }
+
         <Tooltip title="Account settings">
           <IconButton
             onClick={handleClick}

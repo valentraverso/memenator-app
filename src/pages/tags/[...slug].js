@@ -1,14 +1,17 @@
 'use client';
 
 import { useQuery } from "@tanstack/react-query";
-import CardGif from "../UI/components/Cards/CardGif";
-import getAllGifs from "./api/gifs/getAllGifs";
-import PrincipalLayout from "../UI/layouts/PrincipalLayout";
+import CardGif from "../../UI/components/Cards/CardGif";
+import PrincipalLayout from "../../UI/layouts/PrincipalLayout";
 import { Grid } from "@mui/material";
+import { useRouter } from "next/router";
+import getByTagName from "../api/gifs/getByTag";
 
 export default function Page() {
-    const { data, isLoading } = useQuery(["all"], async () => {
-        const data = await getAllGifs();
+    const {query: {slug}} = useRouter();
+
+    const { data, isLoading } = useQuery(["tags", slug], async () => {
+        const data = await getByTagName(slug);
 
         return data;
     })
@@ -21,14 +24,11 @@ export default function Page() {
                 <Grid container spacing={4}
                     sx={{ marginLeft: 0, marginTop: 0 }}>
                     {
-                        data.status ?
                         data.data.map((gif, index) => (
                             <Grid key={index} item xs md>
                                 <CardGif data={gif} />
                             </Grid>
                         ))
-                        :
-                        <p>We can't find results</p>
                     }
                 </Grid>
             </PrincipalLayout>
