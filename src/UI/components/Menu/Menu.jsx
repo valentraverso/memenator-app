@@ -42,7 +42,7 @@ export default function MenuTemplate() {
   };
 
   const handleSubmit = (e) => {
-    if (e.key === 'Enter' && e.targe.value.length > 1) {
+    if (e.key === 'Enter' && e.target.value.length > 1) {
       router.push(`/search/${e.target.value}`)
     }
   }
